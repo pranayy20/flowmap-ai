@@ -12,6 +12,12 @@
       <p class="tagline">Local-first. Privacy by default.</p>
     </header>
 
+    <div class="banner warning" id="quotaBanner" hidden role="status">
+      Local storage is getting full. Consider exporting older recordings soon.
+    </div>
+
+    <div class="banner error" id="errorBanner" hidden role="alert"></div>
+
     <section class="status" id="status">
       <span class="status-dot" id="statusDot"></span>
       <span id="statusText">Idle</span>
@@ -19,7 +25,16 @@
 
     <section class="controls">
       <button id="startBtn" class="btn primary">Start Recording</button>
-      <button id="stopBtn" class="btn secondary" disabled>Stop</button>
+      <button id="pauseBtn" class="btn secondary" hidden>Pause</button>
+      <button id="resumeBtn" class="btn primary" hidden>Resume</button>
+      <button id="stopBtn" class="btn secondary" hidden>Stop</button>
+    </section>
+
+    <button id="exportBtn" class="btn secondary full-width" hidden>Export recordings</button>
+
+    <section class="redaction-summary">
+      <h2>This session</h2>
+      <p id="redactionSummary">No sensitive fields redacted yet.</p>
     </section>
 
     <p class="disclosure">
@@ -28,6 +43,18 @@
       uploaded unless you choose Save to Workspace or Export.
     </p>
   </main>
+
+  <div class="modal-overlay" id="quotaModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="quotaModalTitle">
+      <h2 id="quotaModalTitle">Storage almost full</h2>
+      <p>Local storage is almost full. Export recordings now to keep capturing safely.</p>
+      <div class="modal-actions">
+        <button id="quotaModalDismiss" class="btn secondary">Not now</button>
+        <button id="quotaModalExport" class="btn primary">Export</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="popup.js"></script>
 </body>
 </html>
