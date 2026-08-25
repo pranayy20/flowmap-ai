@@ -30,7 +30,15 @@
       <button id="stopBtn" class="btn secondary" hidden>Stop</button>
     </section>
 
-    <button id="exportBtn" class="btn secondary full-width" hidden>Export recordings</button>
+    <div class="export-row" id="exportRow" hidden>
+      <select id="exportFormat" aria-label="Export format" title="Export format">
+        <option value="markdown" selected>Markdown (.md)</option>
+        <option value="html">HTML (.html)</option>
+        <option value="pdf">PDF (.pdf)</option>
+        <option value="docx">Word (.docx)</option>
+      </select>
+      <button id="exportBtn" class="btn secondary">Export recordings</button>
+    </div>
 
     <section class="redaction-summary">
       <h2>This session</h2>

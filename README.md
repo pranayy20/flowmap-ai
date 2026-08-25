@@ -38,7 +38,7 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 - No build tooling yet (vanilla ES modules, loaded directly) — evaluate a bundler if/when the codebase needs it, don't add one preemptively.
 - No icons — pending UI/brand design, not an engineering task.
 - `chrome-store-submit.yml` is a structural placeholder; real implementation is a `cicd-pipeline-engineer` follow-up per the protocol addendum.
-- No export/"Save to Workspace" pipeline exists yet anywhere in the codebase — the popup's quota UI (Sprint 2) surfaces an Export affordance at WARNING/CRITICAL/BLOCKED thresholds, but it's a placeholder pending that pipeline, not a working export.
+- The quota UI's Export button (WARNING/CRITICAL/BLOCKED thresholds) now calls the real local export pipeline (`exportSessionById()`) and triggers a browser download — see "Sprint 2 frontend delivery" below. "Save to Workspace" (persisting to a team/workspace backend) is still unbuilt; this is local-file export only.
 - No team/workspace backend exists — onboarding's workspace and team/project setup steps (Sprint 2) persist answers to `chrome.storage.local` only, ahead of any real backend.
 
 ## Sprint 2 frontend delivery
@@ -48,6 +48,7 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 - Capture UI polish: popup adds Pause/Resume (backed by `captureState` in `chrome.storage.local`, not in-memory state) and visible error states for permission-denied, stream-lost, and offscreen-document-creation-failure.
 - Onboarding: first-run flow (Welcome -> workspace name/type -> optional host-permission request -> first real recording -> team/project setup) opens on install.
 - Quota UI: popup surfaces WARNING (banner), CRITICAL (blocking modal), and BLOCKED (start disabled, export-only) using the existing `getQuotaState()`/`canStartNewRecording()`.
+- Export wiring: the quota UI's Export button and the CRITICAL modal's Export button now call `exportSessionById()` (`extension/src/export/index.js`, PR #3) for the current/most recently completed session and trigger a download via an anchor-click `Blob` pattern (works reliably from an MV3 popup page without adding the `downloads` permission). The modal's one-click path always defaults to Markdown (fastest, no heavy rendering); the banner's Export button offers an optional MD/HTML/PDF/DOCX picker.
 
 ## Directory structure
 

@@ -1,5 +1,6 @@
 import { getQuotaState, canStartNewRecording, QuotaState } from '../storage/db.js';
 import { getRedactionSummary } from './redaction-summary.js';
+import { exportSessionById, ExportFormat } from '../export/index.js';
 
 const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
@@ -12,7 +13,9 @@ const quotaBanner = document.getElementById('quotaBanner');
 const quotaModal = document.getElementById('quotaModal');
 const quotaModalDismiss = document.getElementById('quotaModalDismiss');
 const quotaModalExport = document.getElementById('quotaModalExport');
+const exportRow = document.getElementById('exportRow');
 const exportBtn = document.getElementById('exportBtn');
+const exportFormatSelect = document.getElementById('exportFormat');
 const redactionSummaryEl = document.getElementById('redactionSummary');
 
 // Visible error copy for the three named failure states from the capture
@@ -27,14 +30,48 @@ const ERROR_MESSAGES = {
   unknown: 'Something went wrong starting the recording.',
 };
 
-// Export isn't implemented anywhere in this codebase yet (no export
-// pipeline exists in storage/db.js or elsewhere) — this ticket is UI
-// wiring only, so the button is present and honest about that rather than
-// faking a download. Tracked as a follow-up in the completion packet.
-function notImplementedExport() {
-  window.alert(
-    'Export isn’t built yet — this button is wired up ahead of that follow-up ticket. Your data stays on this device either way.'
-  );
+// Anchor-click download: reliable from an MV3 popup page (a real DOM
+// document for as long as the popup stays open) without needing the
+// "downloads" permission/manifest change that chrome.downloads.download
+// would require. Revoking the object URL is deferred slightly so the
+// click has time to be picked up by the browser's download handling.
+function triggerBlobDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Exports the current (if paused/mid-session) or most recently completed
+// session — same session resolution `renderRedactions` already uses.
+// Delegates entirely to exportSessionById(); no rendering logic lives here.
+async function handleExport(format) {
+  const state = await chrome.runtime.sendMessage({ type: 'UI_GET_STATE' });
+  const sessionId = state.activeSessionId || state.lastSessionId;
+
+  if (!sessionId) {
+    errorBanner.hidden = false;
+    errorBanner.textContent = 'No recording session to export yet.';
+    return;
+  }
+
+  exportBtn.disabled = true;
+  quotaModalExport.disabled = true;
+  try {
+    const { blob, filename } = await exportSessionById(sessionId, format);
+    triggerBlobDownload(blob, filename);
+    errorBanner.hidden = true;
+  } catch (err) {
+    errorBanner.hidden = false;
+    errorBanner.textContent = 'Export failed — please try again.';
+  } finally {
+    exportBtn.disabled = false;
+    quotaModalExport.disabled = false;
+  }
 }
 
 let quotaModalDismissedForState = null;
@@ -84,7 +121,7 @@ async function renderQuota(state) {
     quotaModalDismissedForState = null;
   }
 
-  exportBtn.hidden = quotaState === QuotaState.NORMAL;
+  exportRow.hidden = quotaState === QuotaState.NORMAL;
   startBtn.disabled = recordingActive || !startAllowed;
   startBtn.title = !startAllowed ? 'Local storage is full — export to continue' : '';
 }
@@ -137,7 +174,10 @@ quotaModalDismiss.addEventListener('click', () => {
   quotaModal.hidden = true;
 });
 
-quotaModalExport.addEventListener('click', notImplementedExport);
-exportBtn.addEventListener('click', notImplementedExport);
+// Modal Export (CRITICAL/BLOCKED path) is the one-click P1 action — always
+// Markdown, no picker, fastest path to unblocking storage.
+quotaModalExport.addEventListener('click', () => handleExport(ExportFormat.MARKDOWN));
+// Banner Export offers the optional format picker; defaults to Markdown.
+exportBtn.addEventListener('click', () => handleExport(exportFormatSelect.value));
 
 refresh();
