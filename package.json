@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "FlowMap AI — AI-powered process documentation and workflow discovery. Local-first Chrome extension.",
+  "type": "module",
   "scripts": {
-    "lint": "echo \"No linter configured yet — tracked as a Sprint 2 follow-up\" && exit 0"
+    "lint": "echo \"No linter configured yet — tracked as a Sprint 2 follow-up\" && exit 0",
+    "test:tier1": "node extension/test/run-scoring.js"
   },
   "license": "UNLICENSED"
 }

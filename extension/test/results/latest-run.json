@@ -1,0 +1,2920 @@
+{
+  "generatedAt": "2026-08-25T16:44:28.685Z",
+  "totalSamples": 142,
+  "corpusSize": {
+    "A": 96,
+    "B": 34,
+    "C": 12
+  },
+  "fullDesignSize": {
+    "A": 900,
+    "B": 630,
+    "C": 250
+  },
+  "bar": {
+    "A": {
+      "recall": 0.995,
+      "precision": 0.9
+    },
+    "B": {
+      "recall": 0.95,
+      "precision": 0.85
+    },
+    "C": {
+      "recall": 0.85,
+      "precision": null
+    }
+  },
+  "perTier": {
+    "A": {
+      "tp": 56,
+      "fp": 13,
+      "fn": 13,
+      "tn": 10,
+      "recall": 0.8115942028985508,
+      "precision": 0.8115942028985508,
+      "recallBar": 0.995,
+      "precisionBar": 0.9,
+      "recallResult": "FAIL",
+      "precisionResult": "FAIL"
+    },
+    "B": {
+      "tp": 13,
+      "fp": 7,
+      "fn": 14,
+      "tn": 4,
+      "recall": 0.48148148148148145,
+      "precision": 0.65,
+      "recallBar": 0.95,
+      "precisionBar": 0.85,
+      "recallResult": "FAIL",
+      "precisionResult": "FAIL"
+    },
+    "C": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 8,
+      "tn": 4,
+      "recall": 0,
+      "precision": null,
+      "recallBar": 0.85,
+      "precisionBar": null,
+      "recallResult": "FAIL",
+      "precisionResult": "n/a"
+    }
+  },
+  "perCategory": {
+    "address": {
+      "tp": 4,
+      "fp": 3,
+      "fn": 2,
+      "tn": 0,
+      "recall": 0.6666666666666666,
+      "precision": 0.5714285714285714
+    },
+    "aws_key": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "recall": 1,
+      "precision": 1
+    },
+    "bank_account": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 2,
+      "tn": 3,
+      "recall": 0.75,
+      "precision": 1
+    },
+    "business_data": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 6,
+      "tn": 0,
+      "recall": 0,
+      "precision": null
+    },
+    "credit_card": {
+      "tp": 11,
+      "fp": 2,
+      "fn": 2,
+      "tn": 1,
+      "recall": 0.8461538461538461,
+      "precision": 0.8461538461538461
+    },
+    "email": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "recall": 1,
+      "precision": 1
+    },
+    "generic_business_terms": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tn": 2,
+      "recall": 0,
+      "precision": null
+    },
+    "generic_secret": {
+      "tp": 5,
+      "fp": 4,
+      "fn": 0,
+      "tn": 1,
+      "recall": 1,
+      "precision": 0.5555555555555556
+    },
+    "github_token": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "recall": 0.5,
+      "precision": 1
+    },
+    "google_api_key": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "recall": 1,
+      "precision": 1
+    },
+    "internal_url": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 6,
+      "tn": 0,
+      "recall": 0,
+      "precision": null
+    },
+    "jwt": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "recall": 1,
+      "precision": 1
+    },
+    "mfa_otp": {
+      "tp": 7,
+      "fp": 0,
+      "fn": 3,
+      "tn": 3,
+      "recall": 0.7,
+      "precision": 1
+    },
+    "password": {
+      "tp": 8,
+      "fp": 5,
+      "fn": 3,
+      "tn": 0,
+      "recall": 0.7272727272727273,
+      "precision": 0.6153846153846154
+    },
+    "phone": {
+      "tp": 4,
+      "fp": 4,
+      "fn": 0,
+      "tn": 1,
+      "recall": 1,
+      "precision": 0.5
+    },
+    "pricing": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 4,
+      "tn": 2,
+      "recall": 0,
+      "precision": null
+    },
+    "private_key_block": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "recall": 1,
+      "precision": 1
+    },
+    "ssn": {
+      "tp": 11,
+      "fp": 2,
+      "fn": 2,
+      "tn": 2,
+      "recall": 0.8461538461538461,
+      "precision": 0.8461538461538461
+    },
+    "stripe_key": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "recall": 1,
+      "precision": 1
+    }
+  },
+  "records": [
+    {
+      "id": "A-ssn-pos-001",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "dashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-002",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "dashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-003",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "dashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-004",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "dashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-005",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "dashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-006",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "undashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-007",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "undashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-008",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "undashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-009",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "undashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-010",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "undashed",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-pos-011",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "label_only_garbage_value",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-ssn-pos-012",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "label_only_via_name",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-ssn-pos-013",
+      "tier": "A",
+      "category": "ssn",
+      "type": "positive",
+      "variant": "label_only_via_placeholder",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "ssn"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-ssn-neg-001",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "bare_9digit_order_id",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-ssn-neg-002",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "dashed_invoice_id",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-ssn-neg-003",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "phone_10digit",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-ssn-neg-004",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "zip_plus4",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-ssn-neg-005",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "employee_id",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-ssn-neg-006",
+      "tier": "A",
+      "category": "ssn",
+      "type": "hard_negative",
+      "variant": "tracking_number",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-cc-pos-001",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "ungrouped_16",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-002",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "grouped_dashes_16",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-003",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "grouped_spaces_16",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-004",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "ungrouped_16_mc",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-005",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "grouped_dashes_16_mc",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-006",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "ungrouped_15_amex",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-007",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "grouped_spaces_15_amex",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-008",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "ungrouped_14_diners",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-009",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "ungrouped_19_unionpay",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-010",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "grouped_dashes_16_discover",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-011",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "label_only_masked_value",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-cc-pos-012",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "label_only_via_name",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-cc-pos-013",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "positive",
+      "variant": "label_only_empty_value",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "credit_card"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-cc-neg-001",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "hard_negative",
+      "variant": "phone_grouped_4x",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-cc-neg-002",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "hard_negative",
+      "variant": "ups_tracking_alnum",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-cc-neg-003",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "hard_negative",
+      "variant": "product_sku_16digit",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-cc-neg-004",
+      "tier": "A",
+      "category": "credit_card",
+      "type": "hard_negative",
+      "variant": "isbn_13digit_dashed",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "credit_card",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-key-pos-001",
+      "tier": "A",
+      "category": "aws_key",
+      "type": "positive",
+      "variant": "prefix_akia",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "aws_key"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "aws_key",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-002",
+      "tier": "A",
+      "category": "aws_key",
+      "type": "positive",
+      "variant": "prefix_asia",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "aws_key"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "aws_key",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-003",
+      "tier": "A",
+      "category": "stripe_key",
+      "type": "positive",
+      "variant": "prefix_sk_live",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "stripe_key"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "stripe_key",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-004",
+      "tier": "A",
+      "category": "stripe_key",
+      "type": "positive",
+      "variant": "prefix_sk_test",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "stripe_key"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "stripe_key",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-005",
+      "tier": "A",
+      "category": "github_token",
+      "type": "positive",
+      "variant": "prefix_ghp",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "github_token"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-006",
+      "tier": "A",
+      "category": "github_token",
+      "type": "positive",
+      "variant": "prefix_github_pat",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "github_token"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-key-pos-007",
+      "tier": "A",
+      "category": "google_api_key",
+      "type": "positive",
+      "variant": "prefix_aiza",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "google_api_key"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-008",
+      "tier": "A",
+      "category": "jwt",
+      "type": "positive",
+      "variant": "jwt_token",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "jwt"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "jwt",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-009",
+      "tier": "A",
+      "category": "private_key_block",
+      "type": "positive",
+      "variant": "pem_header",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "private_key_block"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "private_key_block",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-010",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "positive",
+      "variant": "generic_no_prefix_alnum_40",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "generic_secret"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-011",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "positive",
+      "variant": "generic_no_prefix_mixedcase_32",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "generic_secret"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-012",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "positive",
+      "variant": "generic_no_prefix_with_underscore",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "generic_secret"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-013",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "positive",
+      "variant": "generic_no_prefix_base64ish_48",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "generic_secret"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-014",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "positive",
+      "variant": "generic_no_prefix_slack_style",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "generic_secret"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-key-pos-015",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_api_key",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-key-neg-001",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "hard_negative",
+      "variant": "git_sha1_40hex",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-key-neg-002",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "hard_negative",
+      "variant": "uuid_no_dashes_32hex",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-key-neg-003",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "hard_negative",
+      "variant": "short_alnum_under32",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-key-neg-004",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "hard_negative",
+      "variant": "lorem_ipsum_long_words",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-key-neg-005",
+      "tier": "A",
+      "category": "generic_secret",
+      "type": "hard_negative",
+      "variant": "concatenated_words_no_secret",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "generic_secret",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-pwd-pos-001",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_password",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-002",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_pwd_abbrev",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-003",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_passwd_alt",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-004",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_user_password_compound",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-005",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "placeholder_secret",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-006",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_token",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-007",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_api_key_underscore",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-008",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "label_api-key_dash",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-pwd-pos-009",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "content_only_mislabeled_short",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-pwd-pos-010",
+      "tier": "A",
+      "category": "password",
+      "type": "positive",
+      "variant": "content_only_mislabeled_short_2",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "password"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-pwd-neg-001",
+      "tier": "A",
+      "category": "password",
+      "type": "hard_negative",
+      "variant": "passenger_name_substring_pass",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-pwd-neg-002",
+      "tier": "A",
+      "category": "password",
+      "type": "hard_negative",
+      "variant": "secretary_substring_secret",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-pwd-neg-003",
+      "tier": "A",
+      "category": "password",
+      "type": "hard_negative",
+      "variant": "tokenizer_substring_token",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-pwd-neg-004",
+      "tier": "A",
+      "category": "password",
+      "type": "hard_negative",
+      "variant": "bypass_substring_pass",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-pwd-neg-005",
+      "tier": "A",
+      "category": "password",
+      "type": "hard_negative",
+      "variant": "compass_substring_pass",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "A",
+        "category": "password",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-mfa-pos-001",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_otp",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-002",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_mfa",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-003",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_2fa",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-004",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_verification_code",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-005",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_verification-code_dash",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-006",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_auth_code",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-mfa-pos-007",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "label_authentication_code",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-008",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "placeholder_2fa",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "mfa_otp",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-mfa-pos-009",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "content_only_mislabeled_6digit",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-mfa-pos-010",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "positive",
+      "variant": "content_only_mislabeled_6digit_2",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "mfa_otp"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-mfa-neg-001",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "hard_negative",
+      "variant": "promo_code_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-mfa-neg-002",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "hard_negative",
+      "variant": "discount_code_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-mfa-neg-003",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "hard_negative",
+      "variant": "zipcode_substring_code",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "A-mfa-neg-004",
+      "tier": "A",
+      "category": "mfa_otp",
+      "type": "hard_negative",
+      "variant": "bare_code_field_no_qualifier",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-bank-pos-001",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_account_number",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-bank-pos-002",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_via_name_account_number",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "bank_account",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-003",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_routing_number",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "ssn",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-004",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_iban",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "bank_account",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-005",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_swift",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "bank_account",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-006",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "label_account-number_dash",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "bank_account",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-007",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "placeholder_routing-number",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": "A",
+        "category": "bank_account",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "A-bank-pos-008",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "positive",
+      "variant": "content_only_iban_mislabeled",
+      "expected": {
+        "redact": true,
+        "tier": "A",
+        "category": "bank_account"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "A-bank-neg-001",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "hard_negative",
+      "variant": "customer_account_id_not_exact_phrase",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-bank-neg-002",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "hard_negative",
+      "variant": "account_status_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "A-bank-neg-003",
+      "tier": "A",
+      "category": "bank_account",
+      "type": "hard_negative",
+      "variant": "accounting_department_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "B-email-pos-001",
+      "tier": "B",
+      "category": "email",
+      "type": "positive",
+      "variant": "label_email",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "email"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "email",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-email-pos-002",
+      "tier": "B",
+      "category": "email",
+      "type": "positive",
+      "variant": "label_via_name",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "email"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "email",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-email-pos-003",
+      "tier": "B",
+      "category": "email",
+      "type": "positive",
+      "variant": "content_only_mislabeled",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "email"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "email",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-email-pos-004",
+      "tier": "B",
+      "category": "email",
+      "type": "positive",
+      "variant": "placeholder_only",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "email"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "email",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-email-pos-005",
+      "tier": "B",
+      "category": "email",
+      "type": "positive",
+      "variant": "content_only_plus_addressing",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "email"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "email",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-email-neg-001",
+      "tier": "B",
+      "category": "email",
+      "type": "hard_negative",
+      "variant": "at_mention_no_domain",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "B-email-neg-002",
+      "tier": "B",
+      "category": "email",
+      "type": "hard_negative",
+      "variant": "version_tag_at_symbol",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "B-email-neg-003",
+      "tier": "B",
+      "category": "email",
+      "type": "hard_negative",
+      "variant": "plain_text_not_email",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "B-phone-pos-001",
+      "tier": "B",
+      "category": "phone",
+      "type": "positive",
+      "variant": "label_phone_parens",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "phone"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-phone-pos-002",
+      "tier": "B",
+      "category": "phone",
+      "type": "positive",
+      "variant": "label_via_name_dashed",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "phone"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-phone-pos-003",
+      "tier": "B",
+      "category": "phone",
+      "type": "positive",
+      "variant": "label_intl_plus1",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "phone"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-phone-pos-004",
+      "tier": "B",
+      "category": "phone",
+      "type": "positive",
+      "variant": "content_only_mislabeled_dashed",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "phone"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-phone-neg-001",
+      "tier": "B",
+      "category": "phone",
+      "type": "hard_negative",
+      "variant": "tracking_id_phone_shaped",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "B-phone-neg-002",
+      "tier": "B",
+      "category": "phone",
+      "type": "hard_negative",
+      "variant": "product_code_dotted_phone_shaped",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "phone",
+        "redact": true,
+        "matchedOn": "content"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "B-phone-neg-003",
+      "tier": "B",
+      "category": "phone",
+      "type": "hard_negative",
+      "variant": "short_extension_7digit",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "B-addr-pos-001",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "label_address",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-addr-pos-002",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "label_street",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-addr-pos-003",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "label_zip",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-addr-pos-004",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "label_postal_code",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "TP"
+    },
+    {
+      "id": "B-addr-pos-005",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "content_only_full_street_address_mislabeled",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-addr-pos-006",
+      "tier": "B",
+      "category": "address",
+      "type": "positive",
+      "variant": "content_only_full_address_generic_label",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "address"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-addr-neg-001",
+      "tier": "B",
+      "category": "address",
+      "type": "hard_negative",
+      "variant": "ip_address_label_substring_address",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": "B",
+        "category": "address",
+        "redact": true,
+        "matchedOn": "label"
+      },
+      "outcome": "FP"
+    },
+    {
+      "id": "B-biz-pos-001",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "customer_name",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-biz-pos-002",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "order_total",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-biz-pos-003",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "deal_stage",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-biz-pos-004",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "contract_id",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-biz-pos-005",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "customer_company",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-biz-pos-006",
+      "tier": "B",
+      "category": "business_data",
+      "type": "positive",
+      "variant": "account_owner",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "business_data"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-001",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "internal_wiki_link",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-002",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "private_ip_admin_link",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-003",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "intranet_url",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-004",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "internal_api_link_via_name",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-005",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "internal_status_link",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "B-url-pos-006",
+      "tier": "B",
+      "category": "internal_url",
+      "type": "positive",
+      "variant": "private_ip_admin_link_unlabeled",
+      "expected": {
+        "redact": true,
+        "tier": "B",
+        "category": "internal_url"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-price-pos-001",
+      "tier": "C",
+      "category": "pricing",
+      "type": "positive",
+      "variant": "label_unit_price",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "pricing"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-price-pos-002",
+      "tier": "C",
+      "category": "pricing",
+      "type": "positive",
+      "variant": "label_price_no_symbol",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "pricing"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-price-pos-003",
+      "tier": "C",
+      "category": "pricing",
+      "type": "positive",
+      "variant": "label_total_price_comma",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "pricing"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-price-pos-004",
+      "tier": "C",
+      "category": "pricing",
+      "type": "positive",
+      "variant": "label_list_price_currency_code",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "pricing"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-price-neg-001",
+      "tier": "C",
+      "category": "pricing",
+      "type": "hard_negative",
+      "variant": "quantity_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "C-price-neg-002",
+      "tier": "C",
+      "category": "pricing",
+      "type": "hard_negative",
+      "variant": "sku_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "C-biz-pos-001",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "positive",
+      "variant": "department",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "generic_business_terms"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-biz-pos-002",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "positive",
+      "variant": "project_name",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "generic_business_terms"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-biz-pos-003",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "positive",
+      "variant": "business_unit",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "generic_business_terms"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-biz-pos-004",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "positive",
+      "variant": "cost_center",
+      "expected": {
+        "redact": true,
+        "tier": "C",
+        "category": "generic_business_terms"
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "FN"
+    },
+    {
+      "id": "C-biz-neg-001",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "hard_negative",
+      "variant": "favorite_color_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    },
+    {
+      "id": "C-biz-neg-002",
+      "tier": "C",
+      "category": "generic_business_terms",
+      "type": "hard_negative",
+      "variant": "random_notes_field",
+      "expected": {
+        "redact": false,
+        "tier": null,
+        "category": null
+      },
+      "actual": {
+        "tier": null,
+        "category": null,
+        "redact": false,
+        "matchedOn": null
+      },
+      "outcome": "TN"
+    }
+  ]
+}
