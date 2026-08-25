@@ -9,14 +9,16 @@
  * from storage first rather than trusting in-memory state to have survived.
  *
  * This file is the sole sender of control messages to the offscreen
- * document (START_CAPTURE / STOP_CAPTURE / STEP_BOUNDARY) and the sole
- * receiver of state/completion messages back from it (CAPTURE_STATE /
- * CAPTURE_COMPLETE). The offscreen document never self-initiates capture.
+ * document (START_CAPTURE / STOP_CAPTURE / PAUSE_CAPTURE / RESUME_CAPTURE /
+ * STEP_BOUNDARY) and the sole receiver of state/completion messages back
+ * from it (CAPTURE_STATE / CAPTURE_COMPLETE). The offscreen document never
+ * self-initiates capture.
  */
 
 import { sessionStore, stepStore, fieldStore, canStartNewRecording } from '../storage/db.js';
 
 const OFFSCREEN_DOCUMENT_PATH = 'src/offscreen/offscreen.html';
+const ONBOARDING_PATH = 'src/onboarding/onboarding.html';
 
 async function hasOffscreenDocument() {
   const contexts = await chrome.runtime.getContexts({
@@ -36,7 +38,15 @@ async function ensureOffscreenDocument() {
 
 async function getState() {
   const { captureState } = await chrome.storage.local.get('captureState');
-  return captureState || { activeSessionId: null, status: 'idle', offscreenDocOpen: false };
+  return (
+    captureState || {
+      activeSessionId: null,
+      status: 'idle',
+      offscreenDocOpen: false,
+      errorReason: null,
+      lastSessionId: null,
+    }
+  );
 }
 
 async function setState(patch) {
@@ -44,6 +54,17 @@ async function setState(patch) {
   const next = { ...current, ...patch };
   await chrome.storage.local.set({ captureState: next });
   return next;
+}
+
+// Maps the internal error tags this file and offscreen.js raise into the
+// small set of reason codes the popup/onboarding UI knows how to render.
+// Kept as a single lookup so UI-facing reason strings stay consistent
+// regardless of which layer detected the failure.
+function classifyStartError(message = '') {
+  if (message.startsWith('STORAGE_BLOCKED')) return 'storage_blocked';
+  if (message.startsWith('OFFSCREEN_DOC_FAILED')) return 'offscreen_document_creation_failed';
+  if (message.startsWith('PERMISSION_DENIED')) return 'permission_denied';
+  return 'unknown';
 }
 
 async function startCapture(tabId) {
@@ -59,10 +80,33 @@ async function startCapture(tabId) {
     status: 'recording',
   });
 
-  await ensureOffscreenDocument();
-  const streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
+  try {
+    await ensureOffscreenDocument();
+  } catch (err) {
+    await sessionStore.update({ id: sessionId, status: 'error' });
+    await setState({
+      activeSessionId: null,
+      status: 'error',
+      errorReason: 'offscreen_document_creation_failed',
+    });
+    throw new Error(`OFFSCREEN_DOC_FAILED: ${err?.message || err}`);
+  }
 
-  await setState({ activeSessionId: sessionId, status: 'recording', offscreenDocOpen: true });
+  let streamId;
+  try {
+    streamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: tabId });
+  } catch (err) {
+    await sessionStore.update({ id: sessionId, status: 'error' });
+    await setState({ activeSessionId: null, status: 'error', errorReason: 'permission_denied' });
+    throw new Error(`PERMISSION_DENIED: ${err?.message || err}`);
+  }
+
+  await setState({
+    activeSessionId: sessionId,
+    status: 'recording',
+    offscreenDocOpen: true,
+    errorReason: null,
+  });
 
   chrome.runtime.sendMessage({
     type: 'START_CAPTURE',
@@ -86,7 +130,34 @@ async function stopCapture() {
   });
 
   await sessionStore.update({ id: state.activeSessionId, status: 'stopping' });
+  await setState({ status: 'stopping' });
   broadcastSessionState(false);
+}
+
+async function pauseCapture() {
+  const state = await getState();
+  if (state.status !== 'recording') return { ok: false, reason: 'not_recording' };
+
+  chrome.runtime.sendMessage({
+    type: 'PAUSE_CAPTURE',
+    target: 'offscreen',
+    sessionId: state.activeSessionId,
+  });
+  await setState({ status: 'paused' });
+  return { ok: true };
+}
+
+async function resumeCapture() {
+  const state = await getState();
+  if (state.status !== 'paused') return { ok: false, reason: 'not_paused' };
+
+  chrome.runtime.sendMessage({
+    type: 'RESUME_CAPTURE',
+    target: 'offscreen',
+    sessionId: state.activeSessionId,
+  });
+  await setState({ status: 'recording' });
+  return { ok: true };
 }
 
 function broadcastSessionState(active) {
@@ -111,12 +182,22 @@ async function handleMessage(message, sender) {
   switch (message.type) {
     case 'UI_START_CAPTURE': {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      const sessionId = await startCapture(tab.id);
-      return { ok: true, sessionId };
+      try {
+        const sessionId = await startCapture(tab.id);
+        return { ok: true, sessionId };
+      } catch (err) {
+        return { ok: false, reason: classifyStartError(err?.message || '') };
+      }
     }
     case 'UI_STOP_CAPTURE': {
       await stopCapture();
       return { ok: true };
+    }
+    case 'UI_PAUSE_CAPTURE': {
+      return pauseCapture();
+    }
+    case 'UI_RESUME_CAPTURE': {
+      return resumeCapture();
     }
     case 'UI_GET_STATE': {
       return getState();
@@ -144,13 +225,33 @@ async function handleMessage(message, sender) {
       return { ok: true };
     }
     case 'CAPTURE_STATE': {
-      // Status ping from the offscreen document — logged, not acted on yet.
+      // Status pings from the offscreen document. 'error' pings are the one
+      // status that changes persisted state — everything else (recording,
+      // step_captured) is informational only.
+      if (message.status === 'error') {
+        if (message.sessionId) {
+          await sessionStore.update({ id: message.sessionId, status: 'error' });
+        }
+        await setState({
+          activeSessionId: null,
+          status: 'error',
+          errorReason: message.reason || 'unknown',
+        });
+      }
       return { ok: true };
     }
     case 'CAPTURE_COMPLETE': {
       const state = await getState();
-      await sessionStore.update({ id: state.activeSessionId, status: 'complete' });
-      await setState({ activeSessionId: null, status: 'idle' });
+      await sessionStore.update({
+        id: state.activeSessionId,
+        status: message.errorReason ? 'error' : 'complete',
+      });
+      await setState({
+        activeSessionId: null,
+        status: 'idle',
+        lastSessionId: state.activeSessionId,
+        errorReason: message.errorReason || null,
+      });
       return { ok: true };
     }
     default:
@@ -170,25 +271,38 @@ chrome.runtime.onStartup.addListener(async () => {
   }
 });
 
+// First-run onboarding: Welcome -> workspace name/type -> optional host
+// permission request -> first real recording (tracked inline, guided from
+// the toolbar popup — see onboarding.js for why the actual Start/Stop
+// buttons live in the popup, not on the onboarding tab itself) -> team/
+// project setup. Only fires on a fresh install, never on update/reload.
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    chrome.tabs.create({ url: chrome.runtime.getURL(ONBOARDING_PATH) });
+  }
+});
+
 chrome.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return; // top-level navigations only
   const state = await getState();
-  if (!state.activeSessionId) return;
+  if (!state.activeSessionId || state.status === 'paused') return;
 
-  await stepStore.create({
+  const step = {
     id: crypto.randomUUID(),
     sessionId: state.activeSessionId,
     order: Date.now(),
     url: details.url,
     timestamp: Date.now(),
     screenshotRef: null, // populated by the offscreen document's capture loop
-  });
+  };
+  await stepStore.create(step);
 
   chrome.runtime.sendMessage({
     type: 'STEP_BOUNDARY',
     target: 'offscreen',
     sessionId: state.activeSessionId,
-    url: details.url,
-    timestamp: Date.now(),
+    stepId: step.id,
+    url: step.url,
+    timestamp: step.timestamp,
   });
 });
