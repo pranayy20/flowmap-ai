@@ -19,6 +19,7 @@ Full charter, PRD, and SDLC record (all decisions, RAID log, team reviews) live 
 | Keyboard-tracking narrowing (blur/change, not raw keystrokes) | [`docs/decisions/keyboard-tracking-narrowing.md`](docs/decisions/keyboard-tracking-narrowing.md) | [`extension/src/content/content-script.js`](extension/src/content/content-script.js) |
 | CWS permission justification | [`docs/cws/permission-justification.md`](docs/cws/permission-justification.md) | [`extension/manifest.json`](extension/manifest.json) |
 | Chrome Web Store distribution process | `sdlc-agent-org/_protocol/04-git-cicd-protocol.md` Section 8 | [`.github/workflows/chrome-store-submit.yml`](.github/workflows/chrome-store-submit.yml) (skeleton) |
+| Extension icon (shield + flow-node mark, privacy-first/local-first identity) | Sprint 2 ticket (`ui-designer`) | [`extension/icons/icon.svg`](extension/icons/icon.svg) source, [`extension/icons/generate-icons.js`](extension/icons/generate-icons.js) build script, [`extension/manifest.json`](extension/manifest.json) `icons`/`action.default_icon` |
 
 ## Privacy model
 
@@ -36,7 +37,6 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 
 - No ML/NER classifier yet for unlabeled free-text sensitive-data detection — Tier 1 currently ships as the hard-rule (regex + label-heuristic) layer only, which is the required fail-closed backstop per ADR-001, not a placeholder for it. Sprint 2's adversarial test corpus (`extension/test/`) measured this layer against the binding accuracy bar and found every tier currently fails it — flagged to `appsec-team-lead`/`solution-architect-lead`, not fixed as part of that QA ticket or this frontend batch.
 - No build tooling yet (vanilla ES modules, loaded directly) — evaluate a bundler if/when the codebase needs it, don't add one preemptively.
-- No icons — pending UI/brand design, not an engineering task.
 - `chrome-store-submit.yml` is a structural placeholder; real implementation is a `cicd-pipeline-engineer` follow-up per the protocol addendum.
 - The quota UI's Export button (WARNING/CRITICAL/BLOCKED thresholds) now calls the real local export pipeline (`exportSessionById()`) and triggers a browser download — see "Sprint 2 frontend delivery" below. "Save to Workspace" (persisting to a team/workspace backend) is still unbuilt; this is local-file export only.
 - No team/workspace backend exists — onboarding's workspace and team/project setup steps (Sprint 2) persist answers to `chrome.storage.local` only, ahead of any real backend.
