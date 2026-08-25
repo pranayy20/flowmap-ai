@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Welcome to FlowMap AI</title>
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+  <main class="onboarding">
+    <section id="screen-welcome" class="screen">
+      <h1>Welcome to FlowMap AI</h1>
+      <p>Turn what you already do into documented, shareable workflows — automatically, and privately.</p>
+      <p class="privacy-note">
+        Sensitive data (passwords, SSNs, API keys, card numbers) is redacted on this
+        device before anything is ever saved. Nothing leaves your machine unless you
+        choose to export or save to a workspace.
+      </p>
+      <button id="getStartedBtn" class="btn primary">Get started</button>
+    </section>
+
+    <section id="screen-workspace" class="screen" hidden>
+      <h1>Set up your workspace</h1>
+      <form id="workspaceForm">
+        <label for="workspaceName">Workspace name</label>
+        <input id="workspaceName" name="workspaceName" type="text" placeholder="e.g. My Workspace" required>
+
+        <label for="workspaceType">Workspace type</label>
+        <select id="workspaceType" name="workspaceType">
+          <option value="individual">Individual</option>
+          <option value="team">Team</option>
+        </select>
+
+        <p class="note">
+          Next, Chrome will ask whether FlowMap AI can read field data on the sites
+          you use. You can change this anytime in Chrome's site settings.
+        </p>
+        <button type="submit" class="btn primary">Continue</button>
+      </form>
+    </section>
+
+    <section id="screen-recording" class="screen" hidden>
+      <h1>Record your first workflow</h1>
+      <p>
+        This is a real recording, not a demo — it becomes your first documented
+        workflow.
+      </p>
+      <ol>
+        <li>Switch to any tab where you do a real task (email, a spreadsheet, an internal tool — anything).</li>
+        <li>Click the FlowMap AI icon in your Chrome toolbar.</li>
+        <li>Click <strong>Start Recording</strong> there, do the task, then click <strong>Stop</strong> when you're finished.</li>
+      </ol>
+      <p id="firstRecordingStatus" class="status-line">Waiting for you to start a recording…</p>
+    </section>
+
+    <section id="screen-team" class="screen" hidden>
+      <h1>Nice work — set up your team &amp; project</h1>
+      <p class="note">Optional — you can skip this and do it later.</p>
+      <form id="teamForm">
+        <label for="teamName">Team name</label>
+        <input id="teamName" name="teamName" type="text" placeholder="e.g. IT Operations">
+
+        <label for="projectName">Project name</label>
+        <input id="projectName" name="projectName" type="text" placeholder="e.g. Onboarding runbooks">
+
+        <div class="form-actions">
+          <button type="button" id="skipTeamBtn" class="btn secondary">Skip</button>
+          <button type="submit" class="btn primary">Save &amp; continue</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="screen-done" class="screen" hidden>
+      <h1>You're all set</h1>
+      <p>Your first workflow is saved locally. Open the FlowMap AI icon anytime to record more.</p>
+      <button id="closeBtn" class="btn primary">Close</button>
+    </section>
+  </main>
+  <script type="module" src="onboarding.js"></script>
+</body>
+</html>
