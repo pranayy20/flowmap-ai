@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!--
+    FlowMap AI mark.
+    Shield silhouette = privacy-first / local-first (nothing leaves the device by default).
+    3-node branching path inside = the flow/process being mapped.
+    Flat fills only (no gradients) so the mark stays legible when rasterized down to 16px.
+  -->
+  <path d="
+    M64,10
+    C34,10 22,22 22,38
+    L22,62
+    C22,90 40,110 64,122
+    C88,110 106,90 106,62
+    L106,38
+    C106,22 94,10 64,10
+    Z"
+    fill="#4F46E5" stroke="#3730A3" stroke-width="2.5"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42,50 L64,66 L86,46"/>
+    <path d="M64,66 L58,90"/>
+  </g>
+  <circle cx="42" cy="50" r="8" fill="#FFFFFF"/>
+  <circle cx="86" cy="46" r="7" fill="#FFFFFF"/>
+  <circle cx="64" cy="66" r="7" fill="#FFFFFF"/>
+  <circle cx="58" cy="90" r="9" fill="#FFFFFF"/>
+</svg>
