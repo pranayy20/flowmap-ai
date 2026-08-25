@@ -34,13 +34,20 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 
 ## Known gaps (tracked, not blocking this scaffold)
 
-- No ML/NER classifier yet for unlabeled free-text sensitive-data detection — Tier 1 currently ships as the hard-rule (regex + label-heuristic) layer only, which is the required fail-closed backstop per ADR-001, not a placeholder for it.
-- Screenshot-per-step capture in `offscreen.js` is a stubbed message contract, not a full frame-grab implementation yet.
-- WARNING/CRITICAL quota states are implemented in `db.js` but not yet wired to any UI surface.
+- No ML/NER classifier yet for unlabeled free-text sensitive-data detection — Tier 1 currently ships as the hard-rule (regex + label-heuristic) layer only, which is the required fail-closed backstop per ADR-001, not a placeholder for it. Sprint 2's adversarial test corpus (`extension/test/`) measured this layer against the binding accuracy bar and found every tier currently fails it — flagged to `appsec-team-lead`/`solution-architect-lead`, not fixed as part of that QA ticket or this frontend batch.
 - No build tooling yet (vanilla ES modules, loaded directly) — evaluate a bundler if/when the codebase needs it, don't add one preemptively.
 - No icons — pending UI/brand design, not an engineering task.
 - `chrome-store-submit.yml` is a structural placeholder; real implementation is a `cicd-pipeline-engineer` follow-up per the protocol addendum.
-- The 4 sub-tickets frontend-team-lead proposed in Sprint 1 (capture UI polish, redaction status display, onboarding flow) are not yet built — the popup UI here is a minimal first cut (start/stop only).
+- No export/"Save to Workspace" pipeline exists yet anywhere in the codebase — the popup's quota UI (Sprint 2) surfaces an Export affordance at WARNING/CRITICAL/BLOCKED thresholds, but it's a placeholder pending that pipeline, not a working export.
+- No team/workspace backend exists — onboarding's workspace and team/project setup steps (Sprint 2) persist answers to `chrome.storage.local` only, ahead of any real backend.
+
+## Sprint 2 frontend delivery
+
+- Screenshot-per-step capture: `offscreen.js` now grabs a real frame (video element + canvas) on each `STEP_BOUNDARY` and writes it via `writeBinaryArtifact()`, updating the originating step's `screenshotRef`.
+- Redaction status display: popup shows a read-only per-session redaction count (e.g. "3 passwords, 1 API key redacted this session") — no accept/reject UI, that's still out of MVP scope.
+- Capture UI polish: popup adds Pause/Resume (backed by `captureState` in `chrome.storage.local`, not in-memory state) and visible error states for permission-denied, stream-lost, and offscreen-document-creation-failure.
+- Onboarding: first-run flow (Welcome -> workspace name/type -> optional host-permission request -> first real recording -> team/project setup) opens on install.
+- Quota UI: popup surfaces WARNING (banner), CRITICAL (blocking modal), and BLOCKED (start disabled, export-only) using the existing `getQuotaState()`/`canStartNewRecording()`.
 
 ## Directory structure
 
@@ -54,7 +61,8 @@ flowmap-ai/
       content/         # field-interaction capture (blur/change)
       detection/       # Tier 1 sensitive-data classifier
       storage/         # IndexedDB + OPFS
-      popup/           # extension UI
+      popup/           # extension UI (capture controls, quota, redaction status)
+      onboarding/      # first-run flow (opened on install)
   docs/
     adr/               # architecture decision records
     decisions/         # Chief Officer / Director-level decisions
