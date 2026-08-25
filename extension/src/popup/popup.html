@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FlowMap AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="popup">
+    <header>
+      <h1>FlowMap AI</h1>
+      <p class="tagline">Local-first. Privacy by default.</p>
+    </header>
+
+    <section class="status" id="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Idle</span>
+    </section>
+
+    <section class="controls">
+      <button id="startBtn" class="btn primary">Start Recording</button>
+      <button id="stopBtn" class="btn secondary" disabled>Stop</button>
+    </section>
+
+    <p class="disclosure">
+      Sensitive data (passwords, SSNs, API keys, card numbers) is redacted
+      automatically on this device before it's ever stored. Nothing is
+      uploaded unless you choose Save to Workspace or Export.
+    </p>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

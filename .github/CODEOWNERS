@@ -1,0 +1,18 @@
+# CODEOWNERS — documentation-only map of which Team Lead is accountable for which path.
+# NOT used for GitHub-native review gating: this org runs on a single shared GitHub account,
+# so CODEOWNERS-required-review (which assumes separate reviewer identities) is not enabled.
+# The real approval gate is the APPROVED-FOR-MERGE check in pr-checks.yml — see
+# _protocol/04-git-cicd-protocol.md Section 0 for why.
+#
+# Replace @agent-id placeholders with the actual GitHub username/team each agent identity maps to,
+# if you ever do move to separate accounts. Until then, treat this file as reference only.
+
+/src/backend/                  @backend-team-lead
+/src/backend/core/             @backend-team-lead
+/src/backend/platform/         @platform-team-lead
+/src/frontend/                 @frontend-team-lead
+/src/security/                 @appsec-team-lead
+/.github/workflows/            @cicd-pipeline-engineer @platform-team-lead
+/docs/adr/                     @solution-architect-lead
+/tests/                        @qa-team-lead
+/tests/performance/            @performance-qa-lead

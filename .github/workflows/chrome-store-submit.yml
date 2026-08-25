@@ -1,0 +1,33 @@
+# Chrome Web Store submission workflow — SKELETON, not yet functional.
+#
+# Per _protocol/04-git-cicd-protocol.md Section 8.2: two-stage submission
+# (Stage A private/unlisted test, Stage B public), manual trigger only,
+# never automatic on merge to main. Scoping and real implementation owned by
+# cicd-pipeline-engineer — this file establishes the structure the protocol
+# addendum describes, not a working pipeline. Do not enable/run until:
+#   1. CWS Developer Dashboard credentials are provisioned (see docs/cws/)
+#   2. The manifest-permission-diff Security-review gate (8.2 step 2) is implemented
+#   3. appsec-team-lead has co-signed the permission-diff gate wording (Sprint 1 sug.)
+
+name: chrome-store-submit
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Submission stage"
+        required: true
+        type: choice
+        options:
+          - private-test
+          - public
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Not yet implemented
+        run: |
+          echo "This workflow is a structural placeholder per 04-git-cicd-protocol.md Section 8.2."
+          echo "Real implementation is a cicd-pipeline-engineer follow-up ticket, not built yet."
+          exit 1

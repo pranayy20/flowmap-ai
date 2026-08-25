@@ -1,0 +1,98 @@
+name: PR Checks
+
+# Runs on every PR targeting dev. All jobs must pass before merge is allowed.
+# This is a required status check — configure branch protection on `dev` to require it.
+
+on:
+  pull_request:
+    branches: [dev]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm test -- --coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  security-scan:
+    name: Security scan
+    runs-on: ubuntu-latest
+    # This is director-security / appsec-team-lead's release-blocking authority
+    # enforced as code. Do not make this job optional or allow-failure.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency vulnerability scan
+        run: npm audit --audit-level=high
+      - name: SAST scan
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - uses: github/codeql-action/analyze@v3
+
+  build:
+    name: Build verification
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+
+  ticket-reference-check:
+    name: Verify ticket reference
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR body for Ticket ID
+        run: |
+          if ! echo "${{ github.event.pull_request.body }}" | grep -qE 'TCK-[0-9]+'; then
+            echo "::error::PR description must reference a Notion Ticket ID (e.g. 'Closes TCK-142')."
+            exit 1
+          fi
+
+  approval-record-check:
+    name: Verify APPROVED-BY line
+    runs-on: ubuntu-latest
+    # This is the real merge-authorization gate given the single shared GitHub account —
+    # see _protocol/04-git-cicd-protocol.md Section 0. GitHub's native "required reviewers"
+    # feature is not used here because it assumes separate reviewer identities.
+    steps:
+      - name: Check PR body for an APPROVED-BY line
+        run: |
+          if ! echo "${{ github.event.pull_request.body }}" | grep -qE 'APPROVED-BY:\s*\S+'; then
+            echo "::error::PR description must include 'APPROVED-BY: <agent_id>' matching an"
+            echo "'APPROVED-FOR-MERGE' entry already recorded in the linked Notion ticket's Notes."
+            echo "This is the merge-authorization record required by _protocol/04-git-cicd-protocol.md."
+            exit 1
+          fi
+      - name: Reminder
+        run: |
+          echo "This check only verifies the PR body has the line — it does not verify the"
+          echo "Notion Notes entry actually exists. The merging agent is responsible for checking"
+          echo "that before merging. A future improvement would call the Notion API here directly."

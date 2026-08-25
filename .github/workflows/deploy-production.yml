@@ -1,0 +1,102 @@
+name: Deploy to Production
+
+# Runs on merge to main, after release-manager-lead's go/no-go and Security sign-off.
+# Owner: release-deployment-engineer executes; cicd-pipeline-engineer maintains this file.
+# Includes automated rollback on failed smoke tests, per Release Engineering's mandate
+# in 05-phase-release.md.
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+
+  deploy-canary:
+    name: Progressive deploy (canary)
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+      - name: Record pre-deploy version for rollback
+        id: predeploy
+        run: |
+          echo "previous_version=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
+      - name: Deploy canary slice
+        id: deploy
+        run: |
+          echo "Replace with actual canary/blue-green deploy command for your hosting target"
+          echo "url=https://example.com" >> "$GITHUB_OUTPUT"
+
+  smoke-test:
+    name: Production smoke tests
+    runs-on: ubuntu-latest
+    needs: deploy-canary
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run test:smoke -- --env=production
+
+  monitor-and-promote:
+    name: Monitor canary and promote to full rollout
+    runs-on: ubuntu-latest
+    needs: smoke-test
+    steps:
+      - name: Check error rate / latency thresholds
+        run: |
+          echo "Replace with real query against your monitoring stack (see 06-phase-operations.md)."
+          echo "If thresholds are breached, this job should fail to trigger the rollback job below."
+      - name: Promote canary to full rollout
+        run: |
+          echo "Replace with actual full-rollout promotion command."
+
+  rollback:
+    name: Automated rollback
+    runs-on: ubuntu-latest
+    needs: [deploy-canary, smoke-test, monitor-and-promote]
+    if: failure()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Roll back to previous version
+        run: |
+          echo "Replace with actual rollback command using the recorded previous_version."
+          echo "This must complete and be verified before this job exits."
+      - name: Escalate to SRE
+        run: |
+          echo "Escalate to sre-team-lead immediately, per the incident process in 06-phase-operations.md."
+          echo "Update the linked Notion ticket: set Ticket Status to Blocked and record the failure in Notes."
+
+  notify-sre:
+    name: Notify SRE of new production deploy
+    runs-on: ubuntu-latest
+    needs: monitor-and-promote
+    if: success()
+    steps:
+      - name: Post notification
+        run: |
+          echo "Notify sre-team-lead that a new production deploy is live so the monitoring baseline is aware."

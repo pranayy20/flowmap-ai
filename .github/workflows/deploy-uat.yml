@@ -1,0 +1,67 @@
+name: Deploy to UAT
+
+# Runs on merge to uat, after qa-team-lead / performance-qa-lead has approved the PR.
+# Owner: release-deployment-engineer executes; cicd-pipeline-engineer maintains this file.
+
+on:
+  push:
+    branches: [uat]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+
+  deploy-uat:
+    name: Deploy to UAT environment
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: uat
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+      - name: Deploy
+        id: deploy
+        run: |
+          echo "Replace with actual deploy command for your hosting target"
+          echo "url=https://uat.example.com" >> "$GITHUB_OUTPUT"
+
+  smoke-test:
+    name: UAT smoke tests
+    runs-on: ubuntu-latest
+    needs: deploy-uat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run test:smoke -- --env=uat
+
+  notify-qa:
+    name: Notify QA that UAT is ready
+    runs-on: ubuntu-latest
+    needs: smoke-test
+    steps:
+      - name: Post notification
+        run: |
+          echo "Notify qa-team-lead via the linked ticket's Notion Notes field that UAT is ready."
+          echo "Wire this step to the Notion API or an agent-triggered follow-up task."
