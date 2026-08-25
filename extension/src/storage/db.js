@@ -61,9 +61,35 @@ async function getAllBySessionId(storeName, indexName, sessionId) {
   });
 }
 
+async function getById(storeName, id) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getAllFromStore(storeName) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// `get`/`all` are additive read accessors (Sprint 2, export-rendering
+// ticket) needed to load a session by id before rendering it — they follow
+// the exact same normalized-store pattern as bySession/byStep above, no new
+// store or denormalized model introduced.
 export const sessionStore = {
   create: (session) => put(STORES.sessions, session),
   update: (session) => put(STORES.sessions, session),
+  get: (id) => getById(STORES.sessions, id),
+  all: () => getAllFromStore(STORES.sessions),
 };
 
 export const stepStore = {
