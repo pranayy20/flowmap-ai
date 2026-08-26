@@ -162,9 +162,18 @@ async function onRecordingStopped() {
 
   // Self-close once no recording is active — avoids leaking the offscreen
   // document indefinitely per the accepted architecture.
-  const contexts = await chrome.runtime.getContexts({ contextTypes: ['OFFSCREEN_DOCUMENT'] });
-  if (contexts.length > 0) {
+  //
+  // This script IS the offscreen document, so there's nothing to query —
+  // just close directly. (An earlier version called
+  // chrome.runtime.getContexts() here first to check "does an offscreen
+  // document exist," which is backwards for a script asking about itself,
+  // and threw an uncaught "not a function" TypeError in real-world testing,
+  // silently skipping the close on every single recording. Found via manual
+  // smoke test, 2026-08-25.)
+  try {
     await chrome.offscreen.closeDocument();
+  } catch {
+    // Already closing/closed — not an error condition worth surfacing.
   }
 }
 

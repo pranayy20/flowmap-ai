@@ -21,10 +21,28 @@ const OFFSCREEN_DOCUMENT_PATH = 'src/offscreen/offscreen.html';
 const ONBOARDING_PATH = 'src/onboarding/onboarding.html';
 
 async function hasOffscreenDocument() {
-  const contexts = await chrome.runtime.getContexts({
-    contextTypes: ['OFFSCREEN_DOCUMENT'],
-  });
-  return contexts.length > 0;
+  // chrome.runtime.getContexts (Chrome 116+) is the documented way to check
+  // this, but a manual smoke test (2026-08-25) found the equivalent call
+  // inside offscreen.js itself throws "not a function" in practice — see
+  // that file's onRecordingStopped() for the fix and full explanation.
+  // Defending here too rather than assuming this call site is safe just
+  // because it runs from the service worker instead: chrome.storage.local's
+  // offscreenDocOpen flag is already this file's own source of truth for
+  // capture state (per the file-level doc comment above), so it's a correct
+  // fallback, not a guess, if getContexts is ever unavailable.
+  if (typeof chrome.runtime.getContexts !== 'function') {
+    const state = await getState();
+    return Boolean(state.offscreenDocOpen);
+  }
+  try {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['OFFSCREEN_DOCUMENT'],
+    });
+    return contexts.length > 0;
+  } catch {
+    const state = await getState();
+    return Boolean(state.offscreenDocOpen);
+  }
 }
 
 async function ensureOffscreenDocument() {
@@ -54,6 +72,38 @@ async function setState(patch) {
   const next = { ...current, ...patch };
   await chrome.storage.local.set({ captureState: next });
   return next;
+}
+
+// Toolbar badge — the one signal visible without reopening the popup, which
+// closes on any page interaction (normal Chrome behavior, not a bug, but it
+// meant a recording in progress was otherwise invisible until this was
+// added; found via manual smoke test, 2026-08-25).
+const BADGE = {
+  recording: { text: 'REC', color: '#dc2626' },
+  paused: { text: 'II', color: '#d97706' },
+  done: { text: '✓', color: '#16a34a' },
+  error: { text: '!', color: '#dc2626' },
+};
+
+let badgeClearTimer = null;
+
+function setBadge(kind) {
+  if (badgeClearTimer) {
+    clearTimeout(badgeClearTimer);
+    badgeClearTimer = null;
+  }
+  const spec = BADGE[kind];
+  if (!spec) {
+    chrome.action.setBadgeText({ text: '' });
+    return;
+  }
+  chrome.action.setBadgeText({ text: spec.text });
+  chrome.action.setBadgeBackgroundColor({ color: spec.color });
+  if (kind === 'done' || kind === 'error') {
+    // Transient states — confirm briefly, then return to the idle (empty)
+    // badge rather than leaving a stale checkmark showing indefinitely.
+    badgeClearTimer = setTimeout(() => chrome.action.setBadgeText({ text: '' }), 4000);
+  }
 }
 
 // Maps the internal error tags this file and offscreen.js raise into the
@@ -89,6 +139,7 @@ async function startCapture(tabId) {
       status: 'error',
       errorReason: 'offscreen_document_creation_failed',
     });
+    setBadge('error');
     throw new Error(`OFFSCREEN_DOC_FAILED: ${err?.message || err}`);
   }
 
@@ -98,6 +149,7 @@ async function startCapture(tabId) {
   } catch (err) {
     await sessionStore.update({ id: sessionId, status: 'error' });
     await setState({ activeSessionId: null, status: 'error', errorReason: 'permission_denied' });
+    setBadge('error');
     throw new Error(`PERMISSION_DENIED: ${err?.message || err}`);
   }
 
@@ -107,6 +159,7 @@ async function startCapture(tabId) {
     offscreenDocOpen: true,
     errorReason: null,
   });
+  setBadge('recording');
 
   chrome.runtime.sendMessage({
     type: 'START_CAPTURE',
@@ -144,6 +197,7 @@ async function pauseCapture() {
     sessionId: state.activeSessionId,
   });
   await setState({ status: 'paused' });
+  setBadge('paused');
   return { ok: true };
 }
 
@@ -157,6 +211,7 @@ async function resumeCapture() {
     sessionId: state.activeSessionId,
   });
   await setState({ status: 'recording' });
+  setBadge('recording');
   return { ok: true };
 }
 
@@ -237,6 +292,7 @@ async function handleMessage(message, sender) {
           status: 'error',
           errorReason: message.reason || 'unknown',
         });
+        setBadge('error');
       }
       return { ok: true };
     }
@@ -252,6 +308,13 @@ async function handleMessage(message, sender) {
         lastSessionId: state.activeSessionId,
         errorReason: message.errorReason || null,
       });
+      // This is the one moment a recording finishing has any visible signal
+      // at all if the popup isn't open — a manual smoke test found that
+      // without it, "did anything happen after I clicked Stop?" had no
+      // answer on screen. Badge alone (not a notification) to avoid the
+      // "notifications" permission and its own CWS review/manifest cost for
+      // what a badge already solves.
+      setBadge(message.errorReason ? 'error' : 'done');
       return { ok: true };
     }
     default:
