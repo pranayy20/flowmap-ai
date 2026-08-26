@@ -70,8 +70,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR body for Ticket ID
+        # PR_BODY passed via env, NOT interpolated directly into the script below.
+        # A prior version wrote `echo "${{ github.event.pull_request.body }}"` inline,
+        # which GitHub Actions substitutes into the YAML *before* the shell ever runs it
+        # — so a PR body containing backticks or `$(...)` (ordinary Markdown code spans,
+        # e.g. an inline reference to a filename) became literal shell source. Found
+        # 2026-08-26 when a legitimate PR body full of backtick-quoted filenames caused
+        # silent "command not found" errors in this step that didn't fail the check —
+        # a real bypass of a real security gate, not a cosmetic bug. `env:` + `"$VAR"`
+        # is the standard fix: the shell sees PR_BODY as an opaque string, never as code.
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          if ! echo "${{ github.event.pull_request.body }}" | grep -qE 'TCK-[0-9]+'; then
+          if ! grep -qE 'TCK-[0-9]+' <<< "$PR_BODY"; then
             echo "::error::PR description must reference a Notion Ticket ID (e.g. 'Closes TCK-142')."
             exit 1
           fi
@@ -84,8 +95,17 @@ jobs:
     # feature is not used here because it assumes separate reviewer identities.
     steps:
       - name: Check PR body for an APPROVED-BY line
+        # See the ticket-reference-check step's comment above — same fix, same reason.
+        # This one matters more: it's the actual merge-authorization gate, and the
+        # injection bug meant a PR body with ordinary backtick-quoted code references
+        # could report APPROVED-BY as present when it wasn't, silently defeating the one
+        # mechanism this org substitutes for GitHub's native reviewer approval. Found
+        # 2026-08-26, before it was exploited (accidentally or otherwise) to actually
+        # merge anything.
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          if ! echo "${{ github.event.pull_request.body }}" | grep -qE 'APPROVED-BY:\s*\S+'; then
+          if ! grep -qE 'APPROVED-BY:\s*\S+' <<< "$PR_BODY"; then
             echo "::error::PR description must include 'APPROVED-BY: <agent_id>' matching an"
             echo "'APPROVED-FOR-MERGE' entry already recorded in the linked Notion ticket's Notes."
             echo "This is the merge-authorization record required by _protocol/04-git-cicd-protocol.md."
