@@ -20,6 +20,54 @@ import { sessionStore, stepStore, fieldStore, canStartNewRecording } from '../st
 const OFFSCREEN_DOCUMENT_PATH = 'src/offscreen/offscreen.html';
 const ONBOARDING_PATH = 'src/onboarding/onboarding.html';
 
+// Side panel is the primary UI surface (replaces the old popup, per Chief
+// Officer decision 2026-08-25 — a popup closes on any page interaction,
+// which a manual smoke test found made an in-progress recording invisible
+// and gave no live feedback; the side panel stays open across navigation,
+// same pattern Scribe uses). Clicking the toolbar icon opens it directly —
+// no default_popup is set in manifest.json.
+chrome.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {
+  // Older Chrome without the Side Panel API (pre-114) — action click will
+  // simply do nothing extra; not worth failing extension startup over.
+});
+
+// Broadcasts a UI-facing event to any open extension page (side panel,
+// onboarding tab). Deliberately separate from the offscreen coordination
+// messages below (those carry `target: 'offscreen'` and are ignored by
+// everything else) so UI updates can't accidentally trigger capture logic
+// and vice versa. A message with no listener (no side panel open) is a
+// silent no-op in Chrome's messaging model — nothing to catch here.
+function broadcastToUI(type, payload = {}) {
+  chrome.runtime.sendMessage({ type, ...payload }).catch(() => {});
+}
+
+// Shared by the initial-step creation (below, once offscreen confirms it's
+// ready) and the webNavigation.onCompleted listener (subsequent steps) —
+// same record shape, same downstream messaging, one place to keep in sync.
+async function createStep(sessionId, url) {
+  const step = {
+    id: crypto.randomUUID(),
+    sessionId,
+    order: Date.now(),
+    url,
+    timestamp: Date.now(),
+    screenshotRef: null, // populated by the offscreen document's capture loop
+  };
+  await stepStore.create(step);
+  broadcastToUI('STEP_ADDED', { step });
+
+  chrome.runtime.sendMessage({
+    type: 'STEP_BOUNDARY',
+    target: 'offscreen',
+    sessionId,
+    stepId: step.id,
+    url: step.url,
+    timestamp: step.timestamp,
+  });
+
+  return step;
+}
+
 async function hasOffscreenDocument() {
   // chrome.runtime.getContexts (Chrome 116+) is the documented way to check
   // this, but a manual smoke test (2026-08-25) found the equivalent call
@@ -74,10 +122,10 @@ async function setState(patch) {
   return next;
 }
 
-// Toolbar badge — the one signal visible without reopening the popup, which
-// closes on any page interaction (normal Chrome behavior, not a bug, but it
-// meant a recording in progress was otherwise invisible until this was
-// added; found via manual smoke test, 2026-08-25).
+// Toolbar badge — visible even when the side panel is closed, since closing
+// it is still possible even though (unlike the old popup) it no longer
+// closes automatically on page interaction. Original gap found via manual
+// smoke test, 2026-08-25, before the side panel replaced the popup.
 const BADGE = {
   recording: { text: 'REC', color: '#dc2626' },
   paused: { text: 'II', color: '#d97706' },
@@ -107,7 +155,7 @@ function setBadge(kind) {
 }
 
 // Maps the internal error tags this file and offscreen.js raise into the
-// small set of reason codes the popup/onboarding UI knows how to render.
+// small set of reason codes the side panel/onboarding UI knows how to render.
 // Kept as a single lookup so UI-facing reason strings stay consistent
 // regardless of which layer detected the failure.
 function classifyStartError(message = '') {
@@ -117,7 +165,7 @@ function classifyStartError(message = '') {
   return 'unknown';
 }
 
-async function startCapture(tabId) {
+async function startCapture(tabId, initialUrl) {
   if (!(await canStartNewRecording())) {
     throw new Error('STORAGE_BLOCKED: quota at or above 95%, export existing recordings first');
   }
@@ -158,8 +206,14 @@ async function startCapture(tabId) {
     status: 'recording',
     offscreenDocOpen: true,
     errorReason: null,
+    // Consumed once, by the CAPTURE_STATE 'recording' handler below — that's
+    // the first reliable signal offscreen's video element is actually ready
+    // to grab a frame from. Creating this step immediately here instead
+    // would race the screenshot against offscreen still setting up.
+    pendingInitialStepUrl: initialUrl || null,
   });
   setBadge('recording');
+  broadcastToUI('UI_STATE_CHANGED');
 
   chrome.runtime.sendMessage({
     type: 'START_CAPTURE',
@@ -184,6 +238,7 @@ async function stopCapture() {
 
   await sessionStore.update({ id: state.activeSessionId, status: 'stopping' });
   await setState({ status: 'stopping' });
+  broadcastToUI('UI_STATE_CHANGED');
   broadcastSessionState(false);
 }
 
@@ -198,6 +253,7 @@ async function pauseCapture() {
   });
   await setState({ status: 'paused' });
   setBadge('paused');
+  broadcastToUI('UI_STATE_CHANGED');
   return { ok: true };
 }
 
@@ -212,6 +268,7 @@ async function resumeCapture() {
   });
   await setState({ status: 'recording' });
   setBadge('recording');
+  broadcastToUI('UI_STATE_CHANGED');
   return { ok: true };
 }
 
@@ -238,7 +295,7 @@ async function handleMessage(message, sender) {
     case 'UI_START_CAPTURE': {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       try {
-        const sessionId = await startCapture(tab.id);
+        const sessionId = await startCapture(tab.id, tab.url);
         return { ok: true, sessionId };
       } catch (err) {
         return { ok: false, reason: classifyStartError(err?.message || '') };
@@ -276,6 +333,13 @@ async function handleMessage(message, sender) {
           redacted: message.classification.redacted,
           timestamp: message.timestamp,
         });
+        // Live redaction feed — the side panel's per-step list updates in
+        // real time as fields get classified, not just on next full refresh.
+        broadcastToUI('FIELD_REDACTED', {
+          stepId: currentStep.id,
+          category: message.classification.category,
+          redacted: message.classification.redacted,
+        });
       }
       return { ok: true };
     }
@@ -293,6 +357,22 @@ async function handleMessage(message, sender) {
           errorReason: message.reason || 'unknown',
         });
         setBadge('error');
+        broadcastToUI('UI_STATE_CHANGED');
+      } else if (message.status === 'step_captured') {
+        // Screenshot for a step finished writing — let the side panel show
+        // "screenshot captured" against that step instead of staying blank.
+        broadcastToUI('STEP_SCREENSHOT_READY', { stepId: message.stepId });
+      } else if (message.status === 'recording') {
+        // First reliable signal that offscreen's video element is actually
+        // ready to grab a frame — this is when the initial step (the page
+        // the user was on when they clicked Start) gets created. Without
+        // this, a recording with zero page navigations produced zero steps
+        // and zero screenshots, found via manual smoke test 2026-08-25.
+        const state = await getState();
+        if (state.activeSessionId && state.pendingInitialStepUrl) {
+          await createStep(state.activeSessionId, state.pendingInitialStepUrl);
+          await setState({ pendingInitialStepUrl: null });
+        }
       }
       return { ok: true };
     }
@@ -309,12 +389,17 @@ async function handleMessage(message, sender) {
         errorReason: message.errorReason || null,
       });
       // This is the one moment a recording finishing has any visible signal
-      // at all if the popup isn't open — a manual smoke test found that
-      // without it, "did anything happen after I clicked Stop?" had no
-      // answer on screen. Badge alone (not a notification) to avoid the
+      // at all if the side panel isn't open — a manual smoke test found
+      // that without it, "did anything happen after I clicked Stop?" had
+      // no answer on screen. Badge alone (not a notification) to avoid the
       // "notifications" permission and its own CWS review/manifest cost for
-      // what a badge already solves.
+      // what a badge already solves. Side panel (when open) additionally
+      // shows an explicit "Recording saved — N steps" line via this event.
       setBadge(message.errorReason ? 'error' : 'done');
+      broadcastToUI('CAPTURE_DONE', {
+        sessionId: state.activeSessionId,
+        errorReason: message.errorReason || null,
+      });
       return { ok: true };
     }
     default:
@@ -336,8 +421,8 @@ chrome.runtime.onStartup.addListener(async () => {
 
 // First-run onboarding: Welcome -> workspace name/type -> optional host
 // permission request -> first real recording (tracked inline, guided from
-// the toolbar popup — see onboarding.js for why the actual Start/Stop
-// buttons live in the popup, not on the onboarding tab itself) -> team/
+// the side panel — see onboarding.js for why the actual Start/Stop
+// buttons live there, not on the onboarding tab itself) -> team/
 // project setup. Only fires on a fresh install, never on update/reload.
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
@@ -349,23 +434,10 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return; // top-level navigations only
   const state = await getState();
   if (!state.activeSessionId || state.status === 'paused') return;
+  // If the initial step (see CAPTURE_STATE 'recording' handler above)
+  // hasn't been created yet, this navigation IS effectively the first step
+  // — skip double-creating it by letting that pending state resolve first.
+  if (state.pendingInitialStepUrl) return;
 
-  const step = {
-    id: crypto.randomUUID(),
-    sessionId: state.activeSessionId,
-    order: Date.now(),
-    url: details.url,
-    timestamp: Date.now(),
-    screenshotRef: null, // populated by the offscreen document's capture loop
-  };
-  await stepStore.create(step);
-
-  chrome.runtime.sendMessage({
-    type: 'STEP_BOUNDARY',
-    target: 'offscreen',
-    sessionId: state.activeSessionId,
-    stepId: step.id,
-    url: step.url,
-    timestamp: step.timestamp,
-  });
+  await createStep(state.activeSessionId, details.url);
 });

@@ -5,7 +5,6 @@
   "version": "0.1.0",
   "description": "AI-powered process documentation and workflow discovery. Local-first, privacy-by-default.",
   "action": {
-    "default_popup": "src/popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -21,6 +20,9 @@
     "service_worker": "src/background/service-worker.js",
     "type": "module"
   },
+  "side_panel": {
+    "default_path": "src/sidepanel/sidepanel.html"
+  },
   "permissions": [
     "activeTab",
     "tabCapture",
@@ -28,7 +30,8 @@
     "scripting",
     "webNavigation",
     "storage",
-    "offscreen"
+    "offscreen",
+    "sidePanel"
   ],
   "optional_host_permissions": [
     "<all_urls>"

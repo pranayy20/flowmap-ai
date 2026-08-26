@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <title>FlowMap AI</title>
-  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
-  <main class="popup">
+  <div class="panel">
     <header>
       <h1>FlowMap AI</h1>
       <p class="tagline">Local-first. Privacy by default.</p>
@@ -18,16 +18,30 @@
 
     <div class="banner error" id="errorBanner" hidden role="alert"></div>
 
-    <section class="status" id="status">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusText">Idle</span>
+    <section class="status-card" id="statusCard">
+      <div class="status-row">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText" class="status-text">Idle</span>
+        <span id="elapsed" class="elapsed" hidden>0:00</span>
+      </div>
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start Recording</button>
+        <button id="pauseBtn" class="btn secondary" hidden>Pause</button>
+        <button id="resumeBtn" class="btn primary" hidden>Resume</button>
+        <button id="stopBtn" class="btn danger" hidden>End Recording</button>
+      </div>
     </section>
 
-    <section class="controls">
-      <button id="startBtn" class="btn primary">Start Recording</button>
-      <button id="pauseBtn" class="btn secondary" hidden>Pause</button>
-      <button id="resumeBtn" class="btn primary" hidden>Resume</button>
-      <button id="stopBtn" class="btn secondary" hidden>Stop</button>
+    <div class="done-banner" id="doneBanner" hidden role="status"></div>
+
+    <section class="steps-section">
+      <div class="steps-header">
+        <h2>Steps</h2>
+        <span id="stepCount" class="step-count">0</span>
+      </div>
+      <ol id="stepList" class="step-list">
+        <li class="step-empty" id="stepEmpty">Click Start Recording, then use the page normally — each click and page change shows up here as you go.</li>
+      </ol>
     </section>
 
     <div class="export-row" id="exportRow" hidden>
@@ -50,7 +64,7 @@
       automatically on this device before it's ever stored. Nothing is
       uploaded unless you choose Save to Workspace or Export.
     </p>
-  </main>
+  </div>
 
   <div class="modal-overlay" id="quotaModal" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="quotaModalTitle">
@@ -63,6 +77,6 @@
     </div>
   </div>
 
-  <script type="module" src="popup.js"></script>
+  <script type="module" src="sidepanel.js"></script>
 </body>
 </html>

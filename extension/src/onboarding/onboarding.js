@@ -4,7 +4,7 @@
  *
  * Flow: Welcome -> workspace name/type -> optional_host_permissions runtime
  * request -> first real recording (guided inline here, but actually
- * started/stopped from the toolbar popup — see the note below) -> team/
+ * started/stopped from the side panel — see the note below) -> team/
  * project setup (after the recording, not before). Workspace-Type nuance
  * and an Invite-Teammates step are intentionally out of this critical path
  * per the ticket.
@@ -14,10 +14,11 @@
  * itself. chrome.tabCapture.getMediaStreamId() targets a specific tabId
  * captured at the moment Start is clicked — if Start lived here, it would
  * capture the onboarding tab itself, not the real task the user switches to.
- * Instead this screen guides the user to the toolbar popup (the tab that's
- * actually active when they click Start there) and polls capture state in
- * the background so the onboarding flow still advances automatically the
- * moment that first recording completes.
+ * Instead this screen guides the user to the side panel (opened via the
+ * toolbar icon, staying open on whichever tab is actually active when they
+ * click Start there) and polls capture state in the background so the
+ * onboarding flow still advances automatically the moment that first
+ * recording completes.
  */
 
 const screens = {
@@ -65,7 +66,7 @@ workspaceForm.addEventListener('submit', async (event) => {
   startPollingForFirstRecording();
 });
 
-// --- First recording: tracked here, actually driven from the toolbar popup ---
+// --- First recording: tracked here, actually driven from the side panel ---
 const firstRecordingStatus = document.getElementById('firstRecordingStatus');
 let sessionObserved = false;
 let pollHandle = null;

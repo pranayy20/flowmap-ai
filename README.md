@@ -7,7 +7,7 @@ Full charter, PRD, and SDLC record (all decisions, RAID log, team reviews) live 
 
 ## Current status
 
-**M3 Engineering — in progress.** MVP wedge: Technical Writers + IT/Operations. Sprint 1 (Planning/foundational architecture) is complete — see links below.
+**M3 Engineering — in progress.** MVP wedge: Technical Writers + IT/Operations. Sprint 1 (Planning/foundational architecture) is complete — see links below. Sprint 2 (MVP build-out) shipped, then a manual smoke test (2026-08-25) found real bugs automated tests couldn't catch — see "Post-Sprint-2 fixes" below.
 
 ## Architecture
 
@@ -16,6 +16,7 @@ Full charter, PRD, and SDLC record (all decisions, RAID log, team reviews) live 
 | Sensitive-data detection (Tier 1, on-device, mandatory default) | [`docs/adr/adr-001-tiered-detection.md`](docs/adr/adr-001-tiered-detection.md) | [`extension/src/detection/tier1-detector.js`](extension/src/detection/tier1-detector.js) |
 | Local storage (IndexedDB + OPFS hybrid) | [`docs/data-architecture.md`](docs/data-architecture.md) | [`extension/src/storage/db.js`](extension/src/storage/db.js) |
 | Capture architecture (offscreen document, MV3) | Sprint 1 ticket | [`extension/src/background/service-worker.js`](extension/src/background/service-worker.js), [`extension/src/offscreen/offscreen.js`](extension/src/offscreen/offscreen.js) |
+| Primary UI: side panel, not a popup (Chief Officer decision, 2026-08-25 — a popup closes on any page interaction, giving no live feedback during a recording; side panel stays open across navigation, same pattern as Scribe) | Manual smoke test finding | [`extension/src/sidepanel/`](extension/src/sidepanel/), `manifest.json`'s `side_panel` key + `chrome.sidePanel.setPanelBehavior` in the service worker |
 | Keyboard-tracking narrowing (blur/change, not raw keystrokes) | [`docs/decisions/keyboard-tracking-narrowing.md`](docs/decisions/keyboard-tracking-narrowing.md) | [`extension/src/content/content-script.js`](extension/src/content/content-script.js) |
 | CWS permission justification | [`docs/cws/permission-justification.md`](docs/cws/permission-justification.md) | [`extension/manifest.json`](extension/manifest.json) |
 | Chrome Web Store distribution process | `sdlc-agent-org/_protocol/04-git-cicd-protocol.md` Section 8 | [`.github/workflows/chrome-store-submit.yml`](.github/workflows/chrome-store-submit.yml) (skeleton) |
@@ -31,7 +32,10 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 
 1. `chrome://extensions` → enable Developer Mode.
 2. "Load unpacked" → select the `extension/` directory.
-3. The `optional_host_permissions` grant is requested at runtime per-site, not at install — the content script won't run on a page until the extension has been granted access there.
+3. Click the FlowMap AI toolbar icon — this opens the **side panel** (not a popup). Pin the extension if the icon isn't visible.
+4. The `optional_host_permissions` grant is requested at runtime per-site, not at install — the content script won't run on a page until the extension has been granted access there.
+
+**After pulling new changes:** a full remove-and-re-add in `chrome://extensions` is more reliable than the reload icon for service worker / offscreen document changes — Chrome can cache MV3 service worker state aggressively, and the reload button doesn't always pick up everything.
 
 ## Known gaps (tracked, not blocking this scaffold)
 
@@ -40,6 +44,19 @@ There is currently **no human review step** in MVP — AI Privacy Review (manual
 - `chrome-store-submit.yml` is a structural placeholder; real implementation is a `cicd-pipeline-engineer` follow-up per the protocol addendum.
 - The quota UI's Export button (WARNING/CRITICAL/BLOCKED thresholds) now calls the real local export pipeline (`exportSessionById()`) and triggers a browser download — see "Sprint 2 frontend delivery" below. "Save to Workspace" (persisting to a team/workspace backend) is still unbuilt; this is local-file export only.
 - No team/workspace backend exists — onboarding's workspace and team/project setup steps (Sprint 2) persist answers to `chrome.storage.local` only, ahead of any real backend.
+- **The side panel and the three Post-Sprint-2 fixes above are not yet verified in a real browser.** They fixed the specific crash/behavior a manual smoke test reported, verified by reading the actual error and reasoning through the code path — not by re-running that smoke test, since no tool in this environment can drive `chrome://extensions`' native "Load unpacked" file picker or a Chrome window with real click/type access. Same limitation as the original popup-based build; don't treat this as re-verified until someone with a real browser confirms it.
+
+## Post-Sprint-2 fixes (manual smoke test, Chief Officer, 2026-08-25)
+
+Sprint 2 shipped with 50/50 passing Node tests and 91.82% coverage — but nothing in that suite exercises real Chrome extension APIs in an actual browser (no browser environment in the Node test harness). The first real-browser test found three real problems the automated suite gave false confidence about:
+
+1. **Every recording crashed on stop.** `offscreen.js` called `chrome.runtime.getContexts()` on itself to check whether an offscreen document existed, immediately before closing it — backwards (it already knows it's the running document), and not reliably callable from inside an offscreen document's own execution context. Threw an uncaught `TypeError` on every single recording. Recording data was never actually lost (the crash was in post-write cleanup, after the video blob was already written and the completion message already sent) — but there was no feedback that anything had gone wrong, which read as "nothing happened." Fixed by closing directly with no self-query, plus a defensive fallback in the service worker's equivalent call.
+2. **No live feedback during or after a recording.** A popup closes on any page interaction — normal Chrome behavior, but it meant an in-progress recording was invisible the moment you clicked into the page, and there was no confirmation after Stop either. Fixed by replacing the popup with a **side panel** (stays open across navigation) plus a toolbar badge as a secondary signal.
+3. **A recording with zero page navigations produced zero steps and zero screenshots.** Steps were only ever created on `webNavigation.onCompleted` — recording on a single static page (a very normal case) silently captured nothing. Fixed: an initial step is now created as soon as the offscreen document confirms it's ready to capture, using the tab the user was on when they clicked Start, not just on subsequent navigations.
+
+## Side panel (primary UI, replacing the popup)
+
+Live step-by-step feed while recording — inspired directly by Scribe's side-panel pattern, per explicit request after the smoke test. The service worker broadcasts events (`STEP_ADDED`, `FIELD_REDACTED`, `STEP_SCREENSHOT_READY`, `CAPTURE_DONE`, `UI_STATE_CHANGED`) as they happen; the side panel listens and updates in real time rather than only refreshing on open. Shows: large recording-status indicator with elapsed timer, a live-updating list of steps (URL, timestamp, screenshot-captured marker, per-step redaction count), the aggregate redaction summary, quota banner/modal, and export controls — all in one persistent view. See [`extension/src/sidepanel/sidepanel.js`](extension/src/sidepanel/sidepanel.js).
 
 ## Sprint 2 frontend delivery
 
@@ -62,7 +79,8 @@ flowmap-ai/
       content/         # field-interaction capture (blur/change)
       detection/       # Tier 1 sensitive-data classifier
       storage/         # IndexedDB + OPFS
-      popup/           # extension UI (capture controls, quota, redaction status)
+      sidepanel/       # primary UI: capture controls, live step feed, quota, redaction status
+      export/          # local export rendering (Markdown/HTML/PDF/DOCX)
       onboarding/      # first-run flow (opened on install)
   docs/
     adr/               # architecture decision records
