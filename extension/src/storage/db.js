@@ -87,7 +87,19 @@ async function getAllFromStore(storeName) {
 // store or denormalized model introduced.
 export const sessionStore = {
   create: (session) => put(STORES.sessions, session),
-  update: (session) => put(STORES.sessions, session),
+  // MERGES with the existing record — does NOT replace it. A prior version
+  // called put() directly with whatever partial object the caller passed
+  // (e.g. { id, status: 'complete' }), which silently wiped title/createdAt
+  // on every single status transition since IndexedDB put() is a full
+  // overwrite, not a patch. Every completed recording exported as
+  // "Untitled recording session" with no date as a result — found via
+  // manual smoke test, 2026-08-26. Read-modify-write is the correct
+  // semantics for something named "update".
+  update: async (patch) => {
+    if (!patch || !patch.id) throw new Error('sessionStore.update requires an id');
+    const existing = await getById(STORES.sessions, patch.id);
+    return put(STORES.sessions, { ...(existing || {}), ...patch });
+  },
   get: (id) => getById(STORES.sessions, id),
   all: () => getAllFromStore(STORES.sessions),
 };

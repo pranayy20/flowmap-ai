@@ -137,7 +137,7 @@ export async function renderPdf(model) {
   model.steps.forEach((stepModel, idx) => {
     const { step, fields, screenshot } = stepModel;
     ensureSpace(HEADING_SIZE + LINE_GAP);
-    drawWrapped(`Step ${idx + 1}`, HEADING_SIZE, true);
+    drawWrapped(`Step ${idx + 1}${step.description ? `: ${step.description}` : ''}`, HEADING_SIZE, true);
     if (step.url) drawWrapped(step.url, 8, false);
     if (step.timestamp) drawWrapped(new Date(step.timestamp).toLocaleString(), 8, false);
     cursorY -= 4;

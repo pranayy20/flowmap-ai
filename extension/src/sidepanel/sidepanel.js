@@ -37,6 +37,23 @@ const exportRow = document.getElementById('exportRow');
 const exportBtn = document.getElementById('exportBtn');
 const exportFormatSelect = document.getElementById('exportFormat');
 const redactionSummaryEl = document.getElementById('redactionSummary');
+const workspaceBadge = document.getElementById('workspaceBadge');
+
+// Onboarding (onboarding.js) saves { name, type, createdAt } here on
+// first run, but nothing ever displayed it back afterward — a manual
+// smoke test flagged "no way to see my profile" as a direct result.
+// This is read-only display; editing the workspace name/type is out of
+// scope here (no settings surface exists yet for that).
+async function renderWorkspaceBadge() {
+  const { workspaceProfile } = await chrome.storage.local.get('workspaceProfile');
+  if (workspaceProfile?.name) {
+    workspaceBadge.hidden = false;
+    workspaceBadge.textContent = workspaceProfile.name;
+    workspaceBadge.title = `${workspaceProfile.name} (${workspaceProfile.type || 'personal'})`;
+  } else {
+    workspaceBadge.hidden = true;
+  }
+}
 const stepList = document.getElementById('stepList');
 const stepEmpty = document.getElementById('stepEmpty');
 const stepCountEl = document.getElementById('stepCount');
@@ -177,6 +194,12 @@ async function renderRedactions(sessionId) {
   redactionSummaryEl.textContent = sentence || 'No sensitive fields redacted yet.';
 }
 
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = String(text ?? '');
+  return div.innerHTML;
+}
+
 function urlLabel(url) {
   try {
     const u = new URL(url);
@@ -200,10 +223,12 @@ function renderStepItem(step, index) {
     );
   }
 
+  const primaryLabel = step.description ? escapeHtml(step.description) : escapeHtml(urlLabel(step.url));
+
   li.innerHTML = `
     <span class="step-index">${index + 1}</span>
     <span class="step-body">
-      <span class="step-url" title="${step.url || ''}">${urlLabel(step.url)}</span>
+      <span class="step-url" title="${escapeHtml(step.url || '')}">${primaryLabel}</span>
       <span class="step-meta">${metaBits.join(' · ')}</span>
     </span>
   `;
@@ -334,3 +359,7 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 refresh();
+renderWorkspaceBadge();
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.workspaceProfile) renderWorkspaceBadge();
+});

@@ -38,7 +38,7 @@ function renderStep(stepModel, idx) {
 
   return `
   <section class="step">
-    <h2>Step ${idx + 1}</h2>
+    <h2>Step ${idx + 1}${step.description ? `: ${escapeHtml(step.description)}` : ''}</h2>
     ${metaParts.length ? `<p class="meta">${metaParts.join(' &middot; ')}</p>` : ''}
     ${img}
     <table class="fields">

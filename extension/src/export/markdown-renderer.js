@@ -25,7 +25,7 @@ export function renderMarkdown(model) {
 
   steps.forEach((stepModel, idx) => {
     const { step, fields, screenshot } = stepModel;
-    lines.push(`## Step ${idx + 1}`);
+    lines.push(`## Step ${idx + 1}${step.description ? `: ${escapeMd(step.description)}` : ''}`);
     lines.push('');
     if (step.url) lines.push(`URL: ${step.url}`);
     if (step.timestamp) lines.push(`Time: ${new Date(step.timestamp).toLocaleString()}`);

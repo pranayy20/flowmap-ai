@@ -42,14 +42,18 @@ function broadcastToUI(type, payload = {}) {
 }
 
 // Shared by the initial-step creation (below, once offscreen confirms it's
-// ready) and the webNavigation.onCompleted listener (subsequent steps) —
-// same record shape, same downstream messaging, one place to keep in sync.
-async function createStep(sessionId, url) {
+// ready), the USER_CLICK handler (a step per meaningful click — the actual
+// fix for "no step-by-step screenshots while using the app", since most
+// real usage never fires webNavigation.onCompleted), and that listener
+// itself for full page navigations. Same record shape, same downstream
+// messaging, one place to keep in sync.
+async function createStep(sessionId, url, description) {
   const step = {
     id: crypto.randomUUID(),
     sessionId,
     order: Date.now(),
     url,
+    description: description || null, // e.g. 'Clicked "Add to Cart"'; null for a plain navigation step
     timestamp: Date.now(),
     screenshotRef: null, // populated by the offscreen document's capture loop
   };
@@ -313,6 +317,20 @@ async function handleMessage(message, sender) {
     }
     case 'UI_GET_STATE': {
       return getState();
+    }
+    case 'USER_CLICK': {
+      const state = await getState();
+      if (!state.activeSessionId || state.status === 'paused') {
+        return { ok: false, reason: 'no_active_session' };
+      }
+      // A click before any navigation IS the first real interaction —
+      // supersede the placeholder initial-step bookkeeping rather than
+      // create two steps for the same moment.
+      if (state.pendingInitialStepUrl) {
+        await setState({ pendingInitialStepUrl: null });
+      }
+      await createStep(state.activeSessionId, message.url, message.description);
+      return { ok: true };
     }
     case 'FIELD_INTERACTION': {
       const state = await getState();

@@ -100,7 +100,9 @@ export async function renderDocx(model) {
 
   model.steps.forEach((stepModel, idx) => {
     const { step, fields, screenshot } = stepModel;
-    bodyParts.push(paragraph(`Step ${idx + 1}`, { bold: true, size: 26 }));
+    bodyParts.push(
+      paragraph(`Step ${idx + 1}${step.description ? `: ${step.description}` : ''}`, { bold: true, size: 26 })
+    );
     if (step.url) bodyParts.push(paragraph(step.url, { size: 16 }));
     if (step.timestamp) bodyParts.push(paragraph(new Date(step.timestamp).toLocaleString(), { size: 16 }));
 
